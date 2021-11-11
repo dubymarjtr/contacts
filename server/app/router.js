@@ -14,13 +14,17 @@ router.get("/", (_, res) => {
 });
 
 // localhost:3000/products
-router.get("/contacts", async (_, res) => {
+router.get("/contacts", async (req, res) => {
+  const queries = Object.keys(req.query);
+  const values = Object.values(req.query);
   const contacts = await client
     .db(name)
     .collection(collectionName)
-    .find({})
+    .find({ [queries[0]]: { $regex: values[0], $options: "i" } })
     .toArray();
-  console.log(contacts);
+
+  console.log(req.query);
+
   res.json(contacts);
 });
 export default router;
